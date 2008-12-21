@@ -21,15 +21,11 @@ sub inject_alias {
 
     my $word = qr/(?: \w+ | "\w+" | '\w+' )/x;
 
-    # print STDERR "$line, $offset\n";
     my ($new_name, $old_name) = $line =~ m/alias\s+($word)\s*(?:=>|,)\s*($word)/;
     $new_name =~ s/^["']//; $new_name =~ s/["']$//;
     $old_name =~ s/^["']//; $old_name =~ s/["']$//;
 
-    # print STDERR "GET $new_name\n";
-
     substr($line, $offset, 0) = " ;{ sub $new_name; *$new_name = \*$old_name };";
-    # print "=> $line\n";
     B::Hooks::Parser::set_linestr($line);
 }
 
