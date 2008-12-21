@@ -5,36 +5,35 @@ use 5.008;
 
 use B::Hooks::Parser;
 
-use Sub::Install;
 use Sub::Exporter -setup => {
     exports => [ 'alias' ],
     groups => { default => [ 'alias' ] }
 };
-use Devel::Declare::MethodInstaller::Simple;
-
 
 our $VERSION = '0.01';
 
 sub alias {}
-use B::Hooks::OP::Check::EntersubForCV
-    \&alias => sub {
-        B::Hooks::Parser::setup();
-        my $line = B::Hooks::Parser::get_linestr;
-        my $offset = B::Hooks::Parser::get_linestr_offset;
 
-        my $word = qr/(?: \w+ | "\w+" | '\w+' )/x;
+sub inject_alias {
+    B::Hooks::Parser::setup();
+    my $line = B::Hooks::Parser::get_linestr;
+    my $offset = B::Hooks::Parser::get_linestr_offset;
 
-        # print STDERR "$line, $offset\n";
-        my ($new_name, $old_name) = $line =~ m/alias\s+($word)\s*(?:=>|,)\s*($word)/;
-        $new_name =~ s/^["']//; $new_name =~ s/["']$//;
-        $old_name =~ s/^["']//; $old_name =~ s/["']$//;
+    my $word = qr/(?: \w+ | "\w+" | '\w+' )/x;
 
-        # print STDERR "GET $new_name\n";
+    # print STDERR "$line, $offset\n";
+    my ($new_name, $old_name) = $line =~ m/alias\s+($word)\s*(?:=>|,)\s*($word)/;
+    $new_name =~ s/^["']//; $new_name =~ s/["']$//;
+    $old_name =~ s/^["']//; $old_name =~ s/["']$//;
 
-        substr($line, $offset, 0) = " ;{ sub $new_name; *$new_name = \*$old_name };";
-        # print "=> $line\n";
-        B::Hooks::Parser::set_linestr($line);
-    };
+    # print STDERR "GET $new_name\n";
+
+    substr($line, $offset, 0) = " ;{ sub $new_name; *$new_name = \*$old_name };";
+    # print "=> $line\n";
+    B::Hooks::Parser::set_linestr($line);
+}
+
+use B::Hooks::OP::Check::EntersubForCV \&alias => \&inject_alias;
 
 1;
 
