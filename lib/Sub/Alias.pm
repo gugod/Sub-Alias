@@ -14,7 +14,7 @@ our $VERSION = '0.01';
 
 sub alias {}
 
-sub inject_alias {
+sub __inject_alias {
     B::Hooks::Parser::setup();
     my $line = B::Hooks::Parser::get_linestr;
     my $offset = B::Hooks::Parser::get_linestr_offset;
@@ -29,7 +29,7 @@ sub inject_alias {
     B::Hooks::Parser::set_linestr($line);
 }
 
-use B::Hooks::OP::Check::EntersubForCV \&alias => \&inject_alias;
+use B::Hooks::OP::Check::EntersubForCV \&alias => \&__inject_alias;
 
 1;
 

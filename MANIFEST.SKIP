@@ -1,0 +1,8 @@
+.shipit
+.git
+.*~
+.PerlySenseProject
+covered
+cover_db
+^Makefile$
+MANIFEST.bak
