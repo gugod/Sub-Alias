@@ -37,55 +37,66 @@ __END__
 
 =head1 NAME
 
-Sub::Alias - [One line description of module's purpose here]
-
+Sub::Alias - Simple subroutine alias.
 
 =head1 VERSION
 
-This document describes Sub::Alias version 0.0.1
-
+This document describes Sub::Alias version 0.01
 
 =head1 SYNOPSIS
 
     use Sub::Alias;
 
+    sub name { "David" }
+    alias get_name => 'name';
+
+    print get_name; # "David"
 
 =head1 DESCRIPTION
 
+This module does a compile-time code injection to let you define
+subroute aliases with their names, but not code refs.
 
-=head1 INTERFACE 
+The not-so-scarily-described way to alias a sub looks like this:
 
+    sub name { "..." }
+    { sub get_name; *get_name = \&name; }
+
+As you can see, it's a bit of trouble to type the whole line without
+without making your finger jammed unless you're using some smart text
+editors.
+
+=head1 INTERFACE
 
 =over
 
-=item new()
+=item alias $new_name => $old_name
+
+This function is exported by default.
+
+B<NOTICE: It needs to be called with all arguments on the same line.>
+
+The alias subroutine is referenced by its names, not reference. So
+this works:
+
+    alias get_name => 'name';
+
+But this doen't:
+
+    alias get_name => \&name;
+
+Could be working out to make this working like it should. Also notice
+that doing this will actually call the C<name> function.
+
+    alias get_name => name;
+
+You'll just need to pass function names as strings.
 
 =back
-
-=head1 DIAGNOSTICS
-
-=over
-
-=item C<< Error message here, perhaps with %s placeholders >>
-
-[Description of error here]
-
-=item C<< Another error message here >>
-
-[Description of error here]
-
-[Et cetera, et cetera]
-
-=back
-
-
-=head1 CONFIGURATION AND ENVIRONMENT
-
-Sub::Alias requires no configuration files or environment variables.
 
 =head1 DEPENDENCIES
 
-None.
+L<B::Hooks::Parser>, L<Sub::Exporter>
 
 =head1 INCOMPATIBILITIES
 
@@ -107,10 +118,11 @@ Kang-min Liu  C<< <gugod@gugod.org> >>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2008, Kang-min Liu C<< <gugod@gugod.org> >>. All rights reserved.
+Copyright (c) 2008, Kang-min Liu C<< <gugod@gugod.org> >>.
 
-This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+This is free software, licensed under:
+
+    The MIT (X11) License
 
 
 =head1 DISCLAIMER OF WARRANTY
