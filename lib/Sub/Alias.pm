@@ -9,10 +9,11 @@ use Sub::Exporter -setup => {
     exports => [ 'alias' ],
     groups => { default => [ 'alias' ] }
 };
+use Sub::Name;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
-sub alias {}
+sub alias { }
 
 sub __inject_alias {
     B::Hooks::Parser::setup();
@@ -21,10 +22,11 @@ sub __inject_alias {
 
     my $word = qr/(?: \w+ | "\w+" | '\w+' )/x;
 
-    my ($new_name, $old_name) = $line =~ m/alias\s+($word)\s*(?:=>|,)\s*($word)/;
+    my ($new_name, $old_name) = $line =~ m/alias\s+($word)\s*(?:=>|,)\s*(?:\\&)?($word)?/;
+    return unless $new_name && $old_name;
+
     $new_name =~ s/^["']//; $new_name =~ s/["']$//;
     $old_name =~ s/^["']//; $old_name =~ s/["']$//;
-
     substr($line, $offset, 0) = " ;{ sub $new_name; *$new_name = \*$old_name };";
     B::Hooks::Parser::set_linestr($line);
 }

@@ -4,7 +4,10 @@ use Test::More tests => 4;
 
 use Sub::Alias;
 
-sub foo { print "BEH\n"; "the return value of foo" }
+sub foo {
+    die "wrong, should not call foo when defining alias.\n";
+    "the return value of foo"
+}
 
 # alias bar1 => foo;
 alias 'bar2', 'foo';
