@@ -9,7 +9,6 @@ use Sub::Exporter -setup => {
     exports => [ 'alias' ],
     groups => { default => [ 'alias' ] }
 };
-use Sub::Name;
 
 our $VERSION = '0.02';
 
@@ -78,21 +77,22 @@ This function is exported by default.
 
 B<NOTICE: It needs to be called with all arguments on the same line.>
 
-The alias subroutine is referenced by its names, not reference. So
-this works:
+The alias subroutine can be referenced by its name:
 
     alias get_name => 'name';
 
-But this doen't:
+Or by its reference:
 
     alias get_name => \&name;
 
-Could be working out to make this working like it should. Also notice
-that doing this will actually call the C<name> function.
+Also notice that doing this will actually call the C<name> function:
 
     alias get_name => name;
 
-You'll just need to pass function names as strings.
+However, C<get_name> will still be an alias to C<name> funciton after this
+statement.
+
+It is recommended that you just pass function names as strings.
 
 =back
 

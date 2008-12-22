@@ -1,6 +1,9 @@
 # -*- yaml -*-
 # Revision history for Sub-Alias
 
+0.02:
+  - Implement alias by ref: 'alias foo => \&bar'
+
 0.01:
   - Initial release: alias foo => 'bar'
 
