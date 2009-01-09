@@ -1,5 +1,6 @@
 Changes
 inc/Module/Install.pm
+inc/Module/Install/AuthorTests.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
 inc/Module/Install/Fetch.pm
@@ -20,3 +21,6 @@ t/perlcritic.t
 t/pod-coverage.t
 t/pod.t
 t/simple.t
+xt/perlcritic.t
+xt/pod-coverage.t
+xt/pod.t
