@@ -3,34 +3,25 @@ use warnings;
 use strict;
 use 5.008;
 
-use B::Hooks::Parser;
-
 use Sub::Exporter -setup => {
     exports => [ 'alias' ],
     groups => { default => [ 'alias' ] }
 };
 
+use Devel::BeginLift qw(alias);
+
 our $VERSION = '0.02';
 
-sub alias { }
+sub alias {
+    my ($new_name, $old_name) = @_;
+    my $caller = caller;
 
-sub __inject_alias {
-    B::Hooks::Parser::setup();
-    my $line = B::Hooks::Parser::get_linestr;
-    my $offset = B::Hooks::Parser::get_linestr_offset;
+    no strict;
+    no warnings;
+    *{"$caller\::${new_name}"} = ref($old_name) ? $old_name : *{"$caller\::${old_name}"};
 
-    my $word = qr/(?: \w+ | "\w+" | '\w+' )/x;
-
-    my ($new_name, $old_name) = $line =~ m/alias\s+($word)\s*(?:=>|,)\s*(?:\\&)?($word)?/;
-    return unless $new_name && $old_name;
-
-    $new_name =~ s/^["']//; $new_name =~ s/["']$//;
-    $old_name =~ s/^["']//; $old_name =~ s/["']$//;
-    substr($line, $offset, 0) = " ;{ sub $new_name; *$new_name = \*$old_name };";
-    B::Hooks::Parser::set_linestr($line);
+    return 1;
 }
-
-use B::Hooks::OP::Check::EntersubForCV \&alias => \&__inject_alias;
 
 1;
 
@@ -61,7 +52,7 @@ subroute aliases with their names, but not code refs.
 The not-so-scarily-described way to alias a sub looks like this:
 
     sub name { "..." }
-    { sub get_name; *get_name = \&name; }
+    *get_name = \&name;
 
 As you can see, it's a bit of trouble to type the whole line without
 without making your finger jammed unless you're using some smart text

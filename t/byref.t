@@ -11,4 +11,6 @@ sub foo {
 
 alias 'fuu' => \&foo;
 
-is *fuu, *foo;
+# is *fuu, *foo;
+is \&fuu, \&foo;
+
