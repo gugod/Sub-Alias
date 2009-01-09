@@ -12,7 +12,7 @@ use Devel::BeginLift qw(alias);
 
 use Devel::Declare qw();
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 sub alias {
     my ($new_name, $old_name) = @_;
