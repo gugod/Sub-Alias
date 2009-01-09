@@ -8,10 +8,9 @@ build_requires  'Test::More'        => '0.42';
 
 requires 'Sub::Exporter';
 requires 'Devel::BeginLift';
+requires 'Devel::Declare';
 
 tests 't/*.t';
 author_tests 'xt/*.t';
 
 WriteAll;
-
-

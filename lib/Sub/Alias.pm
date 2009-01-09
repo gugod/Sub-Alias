@@ -10,11 +10,34 @@ use Sub::Exporter -setup => {
 
 use Devel::BeginLift qw(alias);
 
+use Devel::Declare qw();
+
 our $VERSION = '0.02';
 
 sub alias {
     my ($new_name, $old_name) = @_;
     my $caller = caller;
+
+    if (defined($new_name) && defined($old_name)) {
+        _alias($new_name, $old_name, $caller);
+    }
+    else {
+        my $line = Devel::Declare::get_linestr;
+        my $offset = Devel::Declare::get_linestr_offset;
+
+        my $line2 = $line;
+        if ($line2 =~ s/alias/Sub::Alias::_alias/) {
+            substr($line, $offset, 0) = $line2;
+            Devel::Declare::set_linestr($line);
+        }
+    }
+    return 1;
+}
+
+
+sub _alias {
+    my ($new_name, $old_name, $caller) = @_;
+    $caller ||= caller;
 
     no strict;
     no warnings;
@@ -66,8 +89,6 @@ editors.
 
 This function is exported by default.
 
-B<NOTICE: It needs to be called with all arguments on the same line.>
-
 The alias subroutine can be referenced by its name:
 
     alias get_name => 'name';
@@ -85,11 +106,17 @@ statement.
 
 It is recommended that you just pass function names as strings.
 
+B<NOTICE:> If your new name depends on runtime data:
+
+    alias $new_foo => \&foo;
+
+You need to put them in a single line alone.
+
 =back
 
 =head1 DEPENDENCIES
 
-L<B::Hooks::Parser>, L<Sub::Exporter>
+L<Devel::BeginLift>, L<Devel::Declare>, L<Sub::Exporter>
 
 =head1 INCOMPATIBILITIES
 
@@ -111,7 +138,7 @@ Kang-min Liu  C<< <gugod@gugod.org> >>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (c) 2008, Kang-min Liu C<< <gugod@gugod.org> >>.
+Copyright (c) 2008, 2009, Kang-min Liu C<< <gugod@gugod.org> >>.
 
 This is free software, licensed under:
 
