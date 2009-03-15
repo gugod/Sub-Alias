@@ -2,6 +2,7 @@ use strict;
 use warnings;
 use inc::Module::Install;
 
+name 'Sub-Alias';
 all_from 'lib/Sub/Alias.pm';
 
 build_requires  'Test::More'        => '0.42';
