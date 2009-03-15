@@ -18,8 +18,11 @@ sub alias {
     my ($new_name, $old_name) = @_;
     my $caller = caller;
 
+    my $line = Devel::Declare::get_linestr;
+    my $package = Devel::Declare::get_curstash_name;
+
     if (defined($new_name) && defined($old_name)) {
-        _alias($new_name, $old_name, $caller);
+        _alias($new_name, $old_name, $package);
     }
     else {
         my $line = Devel::Declare::get_linestr;
@@ -33,7 +36,6 @@ sub alias {
     }
     return 1;
 }
-
 
 sub _alias {
     my ($new_name, $old_name, $caller) = @_;
