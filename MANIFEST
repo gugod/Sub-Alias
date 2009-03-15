@@ -17,6 +17,7 @@ META.yml
 README
 t/00.load.t
 t/byref.t
+t/packaged.t
 t/runtime.t
 t/simple.t
 t/two-lines.t
