@@ -6,3 +6,5 @@ inc/
 Makefile
 cover_db/
 covered/
+/pm_to_blib
+/blib
