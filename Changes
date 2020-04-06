@@ -1,7 +1,9 @@
 Revision history for Sub-Alias
 
 1.0.0
+        - Released at 2020-04-07T00:52:00+0800
         - Use Keyword::Declare and rewrite the whole thing.
+        - Fix the cases when aliases are created in wrong packages. Thanks to Douglas Hunder for contributing the bug report.
 
 0.03
         - Use Devel::BeginLift so that compile time alias can be written as a multiple line statements.
