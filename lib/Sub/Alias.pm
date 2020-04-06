@@ -10,40 +10,35 @@ use Keyword::Declare;
 sub import {
     keyword alias (Ident $new_ident, Comma, Str $old_name) {
         my $old_ident = substr($old_name, 1, -1);
-        my $pkg = caller(2);
-        return qq! {; no strict "refs"; *{"$pkg\::${new_ident}"} = *{"$pkg\::${old_ident}"}; }; !;
+        return qq! {; no strict "refs"; *{"${new_ident}"} = *{"${old_ident}"}; }; !;
     };
 
     keyword alias (Str $new_name, Comma, Str $old_name) {
         my $new_ident = substr($new_name, 1, -1);
         my $old_ident = substr($old_name, 1, -1);
-        my $caller = caller(2);
-        return qq! {; no strict "refs"; *{"$caller\::${new_ident}"} = *{"$caller\::${old_ident}"}; }; !;
+        return qq! {; no strict "refs"; *{"${new_ident}"} = *{"${old_ident}"}; }; !;
     };
 
     keyword alias (Ident $new_ident, Comma, /\\&(?&PerlIdentifier)/ $sub_ref) {
         my $old_ident = substr($sub_ref, 2);
-        my $caller = caller(2);
-        return qq! {; no strict "refs"; *{"$caller\::${new_ident}"} = *{"$caller\::${old_ident}"}; }; !;
+        return qq! {; no strict "refs"; *{"${new_ident}"} = *{"${old_ident}"}; }; !;
     };
 
     keyword alias (Str $new_name, Comma, /\\&(?&PerlIdentifier)/ $sub_ref) {
         my $new_ident = substr($new_name, 1, -1);
         my $old_ident = substr($sub_ref, 2);
         my $caller = caller(2);
-        return qq! {; no strict "refs"; *{"$caller\::${new_ident}"} = *{"$caller\::${old_ident}"}; }; !;
+        return qq! {; no strict "refs"; *{"${new_ident}"} = *{"${old_ident}"}; }; !;
     };
 
     keyword alias (VariableScalar $new_name, Comma, Str $old_name) {
         my $old_ident = substr($old_name, 1, -1);
-        my $pkg = caller(2);
-        return qq! {; no strict "refs"; *{"$pkg\::" . $new_name} = *{"$pkg\::${old_ident}"}; }; !;
+        return qq! {; no strict "refs"; *{"${new_name}"} = *{"${old_ident}"}; }; !;
     };
 
     keyword alias (VariableScalar $new_name, Comma, /\\&(?&PerlIdentifier)/ $sub_ref) {
         my $old_ident = substr($sub_ref, 2);
-        my $pkg = caller(2);
-        return qq! {; no strict "refs"; *{"$pkg\::" . $new_name} = *{"$pkg\::${old_ident}"}; }; !;
+        return qq! {; no strict "refs"; *{"${new_name}"} = *{"${old_ident}"}; }; !;
     };
 }
 
