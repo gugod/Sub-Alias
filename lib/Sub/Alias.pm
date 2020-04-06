@@ -2,8 +2,10 @@ package Sub::Alias;
 use 5.012;
 use strict;
 use warnings;
+
+our $VERSION = 1.0.0;
+
 use Keyword::Declare;
-use PPR;
 
 sub import {
     keyword alias (Ident $new_ident, Comma, Str $old_name) {

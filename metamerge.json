@@ -1,0 +1,14 @@
+{
+    "name": "Sub-Alias",
+    "x_static_install": true,
+    "resources": {
+        "bugtracker": {
+            "web": "https://github.com/gugod/Sub-Alias/issues"
+        },
+        "repository": {
+            "web": "https://github.com/gugod/Sub-Alias",
+            "url": "https://github.com/gugod/Sub-Alias.git",
+            "type": "git"
+        }
+    }
+}
