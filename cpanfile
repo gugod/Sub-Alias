@@ -1,4 +1,3 @@
-requires 'PPR';
 requires 'Keyword::Declare';
 
 on test => sub {
