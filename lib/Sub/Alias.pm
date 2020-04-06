@@ -1,51 +1,52 @@
 package Sub::Alias;
-use warnings;
+use 5.012;
 use strict;
-use 5.008;
+use warnings;
+use Keyword::Declare;
+use PPR;
 
-use Sub::Exporter -setup => {
-    exports => [ 'alias' ],
-    groups => { default => [ 'alias' ] }
-};
+sub import {
+    keyword alias (Ident $new_ident, Comma, Str $old_name) {
+        my $old_ident = substr($old_name, 1, -1);
+        my $pkg = caller(2);
+        return qq! {; no strict "refs"; *{"$pkg\::${new_ident}"} = *{"$pkg\::${old_ident}"}; }; !;
+    };
 
-use Devel::BeginLift qw(alias);
+    keyword alias (Str $new_name, Comma, Str $old_name) {
+        my $new_ident = substr($new_name, 1, -1);
+        my $old_ident = substr($old_name, 1, -1);
+        my $caller = caller(2);
+        return qq! {; no strict "refs"; *{"$caller\::${new_ident}"} = *{"$caller\::${old_ident}"}; }; !;
+    };
 
-use Devel::Declare qw();
+    keyword alias (Ident $new_ident, Comma, /\\&(?&PerlIdentifier)/ $sub_ref) {
+        my $old_ident = substr($sub_ref, 2);
+        my $caller = caller(2);
+        return qq! {; no strict "refs"; *{"$caller\::${new_ident}"} = *{"$caller\::${old_ident}"}; }; !;
+    };
 
-our $VERSION = '0.03';
+    keyword alias (Str $new_name, Comma, /\\&(?&PerlIdentifier)/ $sub_ref) {
+        my $new_ident = substr($new_name, 1, -1);
+        my $old_ident = substr($sub_ref, 2);
+        my $caller = caller(2);
+        return qq! {; no strict "refs"; *{"$caller\::${new_ident}"} = *{"$caller\::${old_ident}"}; }; !;
+    };
 
-sub alias {
-    my ($new_name, $old_name) = @_;
-    my $caller = caller;
+    keyword alias (VariableScalar $new_name, Comma, Str $old_name) {
+        my $old_ident = substr($old_name, 1, -1);
+        my $pkg = caller(2);
+        return qq! {; no strict "refs"; *{"$pkg\::" . $new_name} = *{"$pkg\::${old_ident}"}; }; !;
+    };
 
-    my $line = Devel::Declare::get_linestr;
-    my $package = Devel::Declare::get_curstash_name;
-
-    if (defined($new_name) && defined($old_name)) {
-        _alias($new_name, $old_name, $package);
-    }
-    else {
-        my $line = Devel::Declare::get_linestr;
-        my $offset = Devel::Declare::get_linestr_offset;
-
-        my $line2 = $line;
-        if ($line2 =~ s/alias/Sub::Alias::_alias/) {
-            substr($line, $offset, 0) = $line2;
-            Devel::Declare::set_linestr($line);
-        }
-    }
-    return 1;
+    keyword alias (VariableScalar $new_name, Comma, /\\&(?&PerlIdentifier)/ $sub_ref) {
+        my $old_ident = substr($sub_ref, 2);
+        my $pkg = caller(2);
+        return qq! {; no strict "refs"; *{"$pkg\::" . $new_name} = *{"$pkg\::${old_ident}"}; }; !;
+    };
 }
 
-sub _alias {
-    my ($new_name, $old_name, $caller) = @_;
-    $caller ||= caller;
-
-    no strict;
-    no warnings;
-    *{"$caller\::${new_name}"} = ref($old_name) ? $old_name : *{"$caller\::${old_name}"};
-
-    return 1;
+sub unimport {
+    unkeyword alias;
 }
 
 1;
