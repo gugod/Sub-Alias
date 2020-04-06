@@ -18,61 +18,41 @@ SYNOPSIS
 DESCRIPTION
 
     This module does a compile-time code injection to let you define
-    subroute aliases with their names, but not code refs.
-
-    The not-so-scarily-described way to alias a sub looks like this:
-
-        sub name { "..." }
-        *get_name = \&name;
-
-    As you can see, it's a bit of trouble to type the whole line without
-    without making your finger jammed unless you're using some smart text
-    editors.
+    subroute aliases by names or code refs.
 
 INTERFACE
 
-    alias $new_name => $old_name
+    By <use Sub::Alias>, an new keyword 'alias' is introduced in the scope.
+    Let's say there is an existing subroutine named "wine" and we want to
+    create an alias to it named "vino".
 
-      This function is exported by default.
+    The following 2 ways should be trivial to understand:
 
-      The alias subroutine can be referenced by its name:
+        # By name
+        alias vino => "wine";
+    
+        # By code reference
+        alias vino => \&wine;
 
-          alias get_name => 'name';
+    The first argument can be a scalar variable containing the new name:
 
-      Or by its reference:
+        my $n = "vino";
+        alias $n => \&wine;
 
-          alias get_name => \&name;
-
-      Also notice that doing this will actually call the name function:
-
-          alias get_name => name;
-
-      However, get_name will still be an alias to name funciton after this
-      statement.
-
-      It is recommended that you just pass function names as strings.
-
-      NOTICE: If your new name depends on runtime data:
-
-          alias $new_foo => \&foo;
-
-      You need to put them in a single line alone.
+    Complex exressions that computes a new name is not supported.
 
 DEPENDENCIES
 
-    Devel::BeginLift, Devel::Declare, Sub::Exporter
+    Keyword::Declare
 
 INCOMPATIBILITIES
 
-    None reported.
+    Perl versions older than 5.12 are not supported.
 
 BUGS AND LIMITATIONS
 
-    No bugs have been reported.
-
-    Please report any bugs or feature requests to
-    bug-sub-alias@rt.cpan.org, or through the web interface at
-    http://rt.cpan.org.
+    Please report any bugs or feature requests to Github Issue at
+    https://github.com/gugod/Sub-Alias/issues
 
 AUTHOR
 
@@ -80,7 +60,7 @@ AUTHOR
 
 LICENCE AND COPYRIGHT
 
-    Copyright (c) 2008, 2009, Kang-min Liu <gugod@gugod.org>.
+    Copyright (c) 2020, Kang-min Liu <gugod@gugod.org>.
 
     This is free software, licensed under:
 
